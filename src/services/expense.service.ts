@@ -42,3 +42,9 @@ export const updateExpense = async (
 
   return expense;
 };
+
+export const deleteAll = async (): Promise<object> => {
+  const expenses = await expensesModel.deleteMany({});
+
+  return expenses;
+};
