@@ -1,15 +1,10 @@
 import { z } from 'zod';
-import { Types } from 'mongoose';
 
-// Definir un schema personalizado para validar ObjectId
-const objectIdSchema = z.custom<Types.ObjectId>(
-  (value) => {
-    return Types.ObjectId.isValid(value);
-  },
-  {
-    message: 'Invalid ObjectId',
-  }
-);
+export const objectIdSchema = z
+  .string()
+  .regex(/^[0-9a-fA-F]{24}$/, 'ID inválido');
+
+export type IdValid = z.infer<typeof objectIdSchema>;
 
 export const expenseSchema = z.object({
   _id: objectIdSchema.optional(),

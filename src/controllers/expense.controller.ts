@@ -2,8 +2,10 @@ import { Request, Response } from 'express';
 import * as expenseServices from '../services/expense.service';
 import {
   expenseSchemaOutId,
+  objectIdSchema,
   partialExpenseSchema,
 } from '../schemas/expense.schemas';
+import { ZodError } from 'zod';
 
 export const getAllExpenses = async (_req: Request, res: Response) => {
   try {
@@ -13,22 +15,32 @@ export const getAllExpenses = async (_req: Request, res: Response) => {
       .status(200)
       .json({ message: 'Gastos encontrados', payload: expenses });
   } catch (error) {
-    return res.status(400).json(error);
+    console.log(error);
+
+    return res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
 
 export const getExpenseById = async (req: Request, res: Response) => {
   try {
-    const expense = await expenseServices.getExpenseById(req.params.id);
-    console.log(expense);
+    const id = objectIdSchema.parse(req.params.id);
 
-    return expense != null
-      ? res
-          .status(200)
-          .json({ message: 'Gasto obtenido correctamente', payload: expense })
-      : res.sendStatus(404);
+    const expense = await expenseServices.getExpenseById(id);
+
+    if (!expense) {
+      res.status(404).json({ message: 'Gasto no encontrado' });
+    }
+
+    return res
+      .status(200)
+      .json({ message: 'Gasto obtenido correctamente', payload: expense });
   } catch (error) {
-    console.error('Error fetching expense', error);
+    if (error instanceof ZodError) {
+      return res.status(400).json(error);
+    }
+
+    console.log(error);
+
     return res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
@@ -43,34 +55,49 @@ export const addExpense = async (req: Request, res: Response) => {
       payload: newExpense,
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res.status(400).json(error);
+    }
+
     console.log(error);
-    return res.status(400).json(error);
+
+    return res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
 
-export const deleteExpense = async (req: Request, res: Response) => {
+export const deleteExpenseById = async (req: Request, res: Response) => {
   try {
-    const expense = await expenseServices.deleteExpenseById(req.params.id);
+    const id = objectIdSchema.parse(req.params.id);
+
+    const expense = await expenseServices.deleteExpenseById(id);
+
+    if (!expense) {
+      return res.status(404).json({ message: 'Gasto no encontrado' });
+    }
 
     return res
       .status(200)
       .json({ message: 'Gasto eliminado correctamente', payload: expense });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res.status(400).json(error);
+    }
+
     console.log(error);
-    return res
-      .status(400)
-      .json({ message: 'Error al eliminar el documento', error });
+
+    return res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
 
 export const updateExpense = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
+    const id = objectIdSchema.parse(req.params.id);
     const newData = partialExpenseSchema.parse(req.body);
+
     const updatedExpense = await expenseServices.updateExpense(id, newData);
 
-    if (newData === null) {
-      return;
+    if (!updatedExpense) {
+      return res.status(404).json({ message: 'Gasto no encontrado' });
     }
 
     return res.status(200).json({
@@ -78,23 +105,27 @@ export const updateExpense = async (req: Request, res: Response) => {
       payload: updatedExpense,
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return res.status(400).json(error);
+    }
+
     console.log(error);
-    return res.status(400).json(error);
+
+    return res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
 
 export const deleteAllExpenses = async (_req: Request, res: Response) => {
   try {
-    const expeses = await expenseServices.deleteAll();
+    const expenses = await expenseServices.deleteAll();
+
     return res.status(200).json({
-      messege: 'Gastos eliminados correctamente',
-      payload: expeses,
+      message: 'Gastos eliminados correctamente',
+      payload: expenses,
     });
   } catch (error) {
     console.log(error);
 
-    return res
-      .status(400)
-      .json({ message: 'Error al eliminar los registros', error });
+    return res.status(500).json({ message: 'Internal Server Error', error });
   }
 };

@@ -2,7 +2,7 @@ import express from 'express';
 import {
   addExpense,
   deleteAllExpenses,
-  deleteExpense,
+  deleteExpenseById,
   getAllExpenses,
   getExpenseById,
   updateExpense,
@@ -11,10 +11,15 @@ import {
 const router = express.Router();
 
 router.get('/', getAllExpenses);
+
 router.get('/:id', getExpenseById);
+
 router.post('/', addExpense);
-router.delete('/:id', deleteExpense);
+
 router.patch('/:id', updateExpense);
+
+router.delete('/:id', deleteExpenseById);
+
 router.delete('/', deleteAllExpenses);
 
 export default router;
