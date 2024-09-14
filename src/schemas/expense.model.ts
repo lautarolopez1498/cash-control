@@ -32,8 +32,6 @@ const expenseSchema = new mongoose.Schema({
     type: Number,
     require: true,
   },
-  recurring: Boolean,
-  recurringInterval: String,
   notes: String,
 });
 

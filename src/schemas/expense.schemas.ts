@@ -16,8 +16,6 @@ export const expenseSchema = z.object({
   description: z.string().optional(),
   paymentMethod: z.string(),
   installments: z.number().int(),
-  recurring: z.boolean(),
-  recurringInterval: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -28,3 +26,9 @@ export type NewExpenseEntry = z.infer<typeof expenseSchemaOutId>;
 
 export const partialExpenseSchema = expenseSchema.partial();
 export type UpdateExpense = z.infer<typeof partialExpenseSchema>;
+
+export const filtersSchema = expenseSchema.omit({
+  amount: true,
+  description: true,
+  notes: true,
+});

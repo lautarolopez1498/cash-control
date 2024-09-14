@@ -12,9 +12,13 @@ export const getExpenses = async (): Promise<ExpenseType[]> => {
 export const getExpenseById = async (
   _id: string
 ): Promise<ExpenseType | any> => {
-  const expense = await expensesModel.findById(_id);
+  try {
+    const expense = await expensesModel.findById(_id);
 
-  return expense;
+    return expense;
+  } catch (error) {
+    console.error('error al obtener gasto por ID', error);
+  }
 };
 
 export const addExpense = async (
