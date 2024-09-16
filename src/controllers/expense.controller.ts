@@ -4,9 +4,11 @@ import {
   expenseSchemaOutId,
   objectIdSchema,
   partialExpenseSchema,
+  userIdParamSchema,
 } from '../schemas/expense.schemas';
 import { ZodError } from 'zod';
 
+// Rutas CRUD
 export const getAllExpenses = async (_req: Request, res: Response) => {
   try {
     const expenses = await expenseServices.getExpenses();
@@ -127,5 +129,38 @@ export const deleteAllExpenses = async (_req: Request, res: Response) => {
     console.log(error);
 
     return res.status(500).json({ message: 'Internal Server Error', error });
+  }
+};
+
+// Rutas adicionales
+export const getExpensesByUser = async (req: Request, res: Response) => {
+  try {
+    const userId = userIdParamSchema.parse(req.params.userId);
+
+    const expenses = await expenseServices.getExpensesByUserId(userId);
+
+    return res.status(200).json({
+      message: 'Gastos de usuario obtenidos correctamente',
+      payload: expenses,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal Server Error', error });
+  }
+};
+
+export const getExpensesByCategory = async (req: Request, res: Response) => {
+  try {
+    const category = req.params.category;
+    const expenses = await expenseServices.getExpensesByCategory(category);
+
+    return res.status(200).json({
+      message: 'Gastos por categoria obtenidos correctamente',
+      payload: expenses,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: 'Internal Error Server', error });
   }
 };

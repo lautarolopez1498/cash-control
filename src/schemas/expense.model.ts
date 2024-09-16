@@ -4,7 +4,7 @@ const expenseCollection = 'expenses';
 
 const expenseSchema = new mongoose.Schema({
   userId: {
-    type: Number,
+    type: String,
     require: true,
   },
   amount: {

@@ -2,11 +2,18 @@ import {
   ExpenseType,
   NewExpenseEntry,
   UpdateExpense,
+  userIdParam,
 } from '../schemas/expense.schemas';
 import expensesModel from '../schemas/expense.model';
 
-export const getExpenses = async (): Promise<ExpenseType[]> => {
-  return await expensesModel.find({});
+export const getExpenses = async (): Promise<ExpenseType[] | any> => {
+  try {
+    const expenses = await expensesModel.find();
+
+    return expenses;
+  } catch (error) {
+    console.error('error al obtener gastos', error);
+  }
 };
 
 export const getExpenseById = async (
@@ -49,6 +56,22 @@ export const updateExpense = async (
 
 export const deleteAll = async (): Promise<object> => {
   const expenses = await expensesModel.deleteMany({});
+
+  return expenses;
+};
+
+export const getExpensesByUserId = async (
+  userId: userIdParam
+): Promise<ExpenseType[] | any> => {
+  const expenses = await expensesModel.find({ userId });
+
+  return expenses;
+};
+
+export const getExpensesByCategory = async (
+  category: string
+): Promise<ExpenseType[] | any> => {
+  const expenses = await expensesModel.find({ category });
 
   return expenses;
 };
