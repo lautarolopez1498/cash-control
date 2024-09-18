@@ -11,7 +11,20 @@ export const expenseSchema = z.object({
   userId: z.string(),
   amount: z.number().positive(),
   currency: z.string().length(3),
-  category: z.string(),
+  category: z.enum([
+    'Ropa',
+    'Auto',
+    'Departamento',
+    'Varios',
+    'Deporte',
+    'Comida',
+    'Casa',
+    'Delivery',
+    'Estudio',
+    'Ahorro',
+    'Salud',
+    'Salidas',
+  ]),
   date: z.string(),
   description: z.string().optional(),
   paymentMethod: z.string(),
@@ -29,3 +42,7 @@ export type UpdateExpense = z.infer<typeof partialExpenseSchema>;
 
 export const userIdParamSchema = z.coerce.number();
 export type userIdParam = z.infer<typeof userIdParamSchema>;
+
+// export const categoryParamSchema = expenseSchema.pick({ category: true });
+export const categoryParamSchema = expenseSchema.shape.category;
+export type categoryParams = z.infer<typeof categoryParamSchema>;

@@ -3,7 +3,7 @@ import { getExpenseById } from '../src/services/expense.service';
 describe('getExpenses', () => {
   test('deberia traer un gasto por su ID', async () => {
     const response = await getExpenseById('66d0e215f00634af00af0ed3');
-    const payload = {
+    const data = {
       _id: '66d0e215f00634af00af0ed3',
       userId: 8,
       amount: 14000,
@@ -17,6 +17,6 @@ describe('getExpenses', () => {
       recurringInterval: null,
       notes: "Doble cuarto de libra en McDonald's",
     };
-    expect(response).toBe(payload);
+    expect(response).toBe(data);
   });
 });

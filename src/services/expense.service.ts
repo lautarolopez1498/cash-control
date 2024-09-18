@@ -1,4 +1,5 @@
 import {
+  categoryParams,
   ExpenseType,
   NewExpenseEntry,
   UpdateExpense,
@@ -51,6 +52,8 @@ export const updateExpense = async (
     updateData
   );
 
+  console.log(expense);
+
   return expense;
 };
 
@@ -69,7 +72,7 @@ export const getExpensesByUserId = async (
 };
 
 export const getExpensesByCategory = async (
-  category: string
+  category: categoryParams
 ): Promise<ExpenseType[] | any> => {
   const expenses = await expensesModel.find({ category });
 

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as expenseServices from '../services/expense.service';
 import {
+  categoryParamSchema,
   expenseSchemaOutId,
   objectIdSchema,
   partialExpenseSchema,
@@ -13,9 +14,15 @@ export const getAllExpenses = async (_req: Request, res: Response) => {
   try {
     const expenses = await expenseServices.getExpenses();
 
+    if (expenses.length === 0) {
+      return res
+        .status(200)
+        .json({ message: 'No se encontraron gastos', data: expenses });
+    }
+
     return res
       .status(200)
-      .json({ message: 'Gastos encontrados', payload: expenses });
+      .json({ message: 'Gastos encontrados', data: expenses });
   } catch (error) {
     console.log(error);
 
@@ -35,7 +42,7 @@ export const getExpenseById = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .json({ message: 'Gasto obtenido correctamente', payload: expense });
+      .json({ message: 'Gasto obtenido correctamente', data: expense });
   } catch (error) {
     if (error instanceof ZodError) {
       return res.status(400).json(error);
@@ -54,7 +61,7 @@ export const addExpense = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       message: 'Gasto ingresado correctamente',
-      payload: newExpense,
+      data: newExpense,
     });
   } catch (error) {
     if (error instanceof ZodError) {
@@ -79,7 +86,7 @@ export const deleteExpenseById = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .json({ message: 'Gasto eliminado correctamente', payload: expense });
+      .json({ message: 'Gasto eliminado correctamente', data: expense });
   } catch (error) {
     if (error instanceof ZodError) {
       return res.status(400).json(error);
@@ -104,7 +111,7 @@ export const updateExpense = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: 'Gasto actualizado correctamente',
-      payload: updatedExpense,
+      data: updatedExpense,
     });
   } catch (error) {
     if (error instanceof ZodError) {
@@ -123,7 +130,7 @@ export const deleteAllExpenses = async (_req: Request, res: Response) => {
 
     return res.status(200).json({
       message: 'Gastos eliminados correctamente',
-      payload: expenses,
+      data: expenses,
     });
   } catch (error) {
     console.log(error);
@@ -136,12 +143,17 @@ export const deleteAllExpenses = async (_req: Request, res: Response) => {
 export const getExpensesByUser = async (req: Request, res: Response) => {
   try {
     const userId = userIdParamSchema.parse(req.params.userId);
-
     const expenses = await expenseServices.getExpensesByUserId(userId);
+
+    if (expenses.length === 0) {
+      return res
+        .status(200)
+        .json({ message: 'Usuario no encontrado', data: expenses });
+    }
 
     return res.status(200).json({
       message: 'Gastos de usuario obtenidos correctamente',
-      payload: expenses,
+      data: expenses,
     });
   } catch (error) {
     console.log(error);
@@ -151,12 +163,21 @@ export const getExpensesByUser = async (req: Request, res: Response) => {
 
 export const getExpensesByCategory = async (req: Request, res: Response) => {
   try {
-    const category = req.params.category;
+    const category = categoryParamSchema.parse(req.params.category);
     const expenses = await expenseServices.getExpensesByCategory(category);
+
+    if (expenses.length === 0) {
+      return res
+        .status(200)
+        .json({
+          message: `No hay ningun gasto para la categoria ${category}`,
+          data: expenses,
+        });
+    }
 
     return res.status(200).json({
       message: 'Gastos por categoria obtenidos correctamente',
-      payload: expenses,
+      data: expenses,
     });
   } catch (error) {
     console.log(error);
