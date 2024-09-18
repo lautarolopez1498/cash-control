@@ -56,7 +56,10 @@ export const getExpenseById = async (req: Request, res: Response) => {
 
 export const addExpense = async (req: Request, res: Response) => {
   try {
-    const data = expenseSchemaOutId.parse(req.body);
+    const { date, ...otherFields } = req.body;
+    const parsedDate = new Date(date);
+    const data = expenseSchemaOutId.parse({ date: parsedDate, ...otherFields });
+
     const newExpense = await expenseServices.addExpense(data);
 
     return res.status(201).json({
@@ -167,12 +170,10 @@ export const getExpensesByCategory = async (req: Request, res: Response) => {
     const expenses = await expenseServices.getExpensesByCategory(category);
 
     if (expenses.length === 0) {
-      return res
-        .status(200)
-        .json({
-          message: `No hay ningun gasto para la categoria ${category}`,
-          data: expenses,
-        });
+      return res.status(200).json({
+        message: `No hay ningun gasto para la categoria ${category}`,
+        data: expenses,
+      });
     }
 
     return res.status(200).json({
