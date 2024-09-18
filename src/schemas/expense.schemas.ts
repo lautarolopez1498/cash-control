@@ -25,7 +25,7 @@ export const expenseSchema = z.object({
     'Salud',
     'Salidas',
   ]),
-  date: z.string(),
+  date: z.date(),
   description: z.string().optional(),
   paymentMethod: z.string(),
   installments: z.number().int(),
