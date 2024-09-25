@@ -3,16 +3,9 @@ import expenseRouter from './routes/expense.routes';
 import mongoose from 'mongoose';
 
 const app = express();
-
-app.use(express.json());
-
 const PORT = 3010;
 
-app.get('/', (_req, res) => {
-  res.send('Control Cash');
-  console.log('On');
-});
-
+app.use(express.json());
 app.use('/api/expenses', expenseRouter);
 
 const starServer = async () => {

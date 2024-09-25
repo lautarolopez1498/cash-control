@@ -2,12 +2,13 @@ import { Request, Response } from 'express';
 import * as expenseServices from '../services/expense.service';
 import {
   categoryParamSchema,
+  dateRangeSchema,
   expenseSchemaOutId,
   objectIdSchema,
   partialExpenseSchema,
   userIdParamSchema,
 } from '../schemas/expense.schemas';
-import { ZodError } from 'zod';
+import { z, ZodError } from 'zod';
 
 // Rutas CRUD
 export const getAllExpenses = async (_req: Request, res: Response) => {
@@ -33,11 +34,12 @@ export const getAllExpenses = async (_req: Request, res: Response) => {
 export const getExpenseById = async (req: Request, res: Response) => {
   try {
     const id = objectIdSchema.parse(req.params.id);
+    console.log(id);
 
     const expense = await expenseServices.getExpenseById(id);
 
     if (!expense) {
-      res.status(404).json({ message: 'Gasto no encontrado' });
+      return res.status(404).json({ message: 'Gasto no encontrado' });
     }
 
     return res
@@ -47,9 +49,6 @@ export const getExpenseById = async (req: Request, res: Response) => {
     if (error instanceof ZodError) {
       return res.status(400).json(error);
     }
-
-    console.log(error);
-
     return res.status(500).json({ message: 'Internal Server Error', error });
   }
 };
@@ -104,7 +103,12 @@ export const deleteExpenseById = async (req: Request, res: Response) => {
 export const updateExpense = async (req: Request, res: Response) => {
   try {
     const id = objectIdSchema.parse(req.params.id);
-    const newData = partialExpenseSchema.parse(req.body);
+    const { date, ...otherFields } = req.body;
+    const parsedDate = new Date(date);
+    const newData = partialExpenseSchema.parse({
+      date: parsedDate,
+      ...otherFields,
+    });
 
     const updatedExpense = await expenseServices.updateExpense(id, newData);
 
@@ -184,5 +188,28 @@ export const getExpensesByCategory = async (req: Request, res: Response) => {
     console.log(error);
 
     return res.status(500).json({ message: 'Internal Error Server', error });
+  }
+};
+
+export const getExpensesByDateRange = async (req: Request, res: Response) => {
+  try {
+    const { startDate, endDate } = dateRangeSchema.parse({
+      startDate: req.query.startDate,
+      endDate: req.query.endDate,
+    });
+    const expenses = await expenseServices.getExpensesByDate(
+      startDate,
+      endDate
+    );
+    console.log(expenses);
+
+    return res
+      .status(200)
+      .json({ message: 'Gastos encontrados correctamente', expenses });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors });
+    }
+    return res.status(500).json({ error: 'Error interno del servidor' });
   }
 };

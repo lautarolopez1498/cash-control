@@ -78,3 +78,16 @@ export const getExpensesByCategory = async (
 
   return expenses;
 };
+
+export const getExpensesByDate = async (
+  startDate: Date,
+  endDate: Date
+): Promise<ExpenseType[] | any> => {
+  const expenses = await expensesModel.find({
+    date: {
+      $gte: startDate,
+      $lte: endDate,
+    },
+  });
+  return expenses;
+};

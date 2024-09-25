@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-export const objectIdSchema = z
-  .string()
-  .regex(/^[0-9a-fA-F]{24}$/, 'ID inválido');
+// export const objectIdSchema = z
+//   .string()
+//   .regex(/^[0-9a-fA-F]{24}$/, 'ID inválido');
 
-export type IdValid = z.infer<typeof objectIdSchema>;
+// export type IdValid = z.infer<typeof objectIdSchema>;
 
 export const expenseSchema = z.object({
-  _id: objectIdSchema.optional(),
+  _id: z.string().optional(),
   userId: z.string(),
   amount: z.number().positive(),
   currency: z.string().length(3),
@@ -32,6 +32,9 @@ export const expenseSchema = z.object({
   notes: z.string().optional(),
 });
 
+export const objectIdSchema = z.string();
+export type ObjectIdType = z.infer<typeof objectIdSchema>;
+
 export type ExpenseType = z.infer<typeof expenseSchema>;
 
 export const expenseSchemaOutId = expenseSchema.omit({ _id: true });
@@ -43,6 +46,13 @@ export type UpdateExpense = z.infer<typeof partialExpenseSchema>;
 export const userIdParamSchema = z.coerce.number();
 export type userIdParam = z.infer<typeof userIdParamSchema>;
 
-// export const categoryParamSchema = expenseSchema.pick({ category: true });
 export const categoryParamSchema = expenseSchema.shape.category;
 export type categoryParams = z.infer<typeof categoryParamSchema>;
+
+// Definir el esquema de validación para las fechas
+const dateSchema = z.coerce.date();
+
+export const dateRangeSchema = z.object({
+  startDate: dateSchema,
+  endDate: dateSchema,
+});

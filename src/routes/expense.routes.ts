@@ -8,13 +8,14 @@ import {
   updateExpense,
   getExpensesByUser,
   getExpensesByCategory,
+  getExpensesByDateRange,
 } from '../controllers/expense.controller';
 
 const router = express.Router();
 
 // Rutas basicas CRUD
 router.get('/', getAllExpenses);
-router.get('/:id', getExpenseById);
+router.get('/id/:id', getExpenseById);
 router.post('/', addExpense);
 router.patch('/:id', updateExpense);
 router.delete('/:id', deleteExpenseById);
@@ -23,7 +24,7 @@ router.delete('/', deleteAllExpenses);
 // Rutas adicionales
 router.get('/user/:userId', getExpensesByUser);
 router.get('/category/:category', getExpensesByCategory);
-// router.get('/date-range', getExpensesByDateRange);
+router.get('/by-date', getExpensesByDateRange);
 // router.get('/summary', getExpenseSummary);
 
 // // Rutas para filtros avanzados
