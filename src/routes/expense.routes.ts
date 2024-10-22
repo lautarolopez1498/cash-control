@@ -24,8 +24,8 @@ router.delete('/', deleteAllExpenses);
 // Rutas adicionales
 router.get('/user/:userId', getExpensesByUser);
 router.get('/category/:category', getExpensesByCategory);
-router.get('/by-date', getExpensesByDateRange);
-// router.get('/summary', getExpenseSummary);
+router.get('/date/by-date', getExpensesByDateRange);
+// router.get('/by-month', getExpensesByDateRange);
 
 // // Rutas para filtros avanzados
 // router.get('/expenses/filter', filterExpenses);

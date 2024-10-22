@@ -11,7 +11,8 @@ export const expenseSchema = z.object({
   userId: z.string(),
   amount: z.number().positive(),
   currency: z.string().length(3),
-  category: z.enum([
+  category: z.enum(['Necesidades', 'Deseos', 'Ahorros/inversiones']),
+  subcategory: z.enum([
     'Ropa',
     'Auto',
     'Departamento',
@@ -29,7 +30,6 @@ export const expenseSchema = z.object({
   description: z.string().optional(),
   paymentMethod: z.string(),
   installments: z.number().int(),
-  notes: z.string().optional(),
 });
 
 export const objectIdSchema = z.string();

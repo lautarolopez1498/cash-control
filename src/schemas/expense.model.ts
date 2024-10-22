@@ -19,6 +19,10 @@ const expenseSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  subcategory: {
+    type: String,
+    require: true,
+  },
   date: {
     type: Date,
     require: true,
@@ -32,7 +36,6 @@ const expenseSchema = new mongoose.Schema({
     type: Number,
     require: true,
   },
-  notes: String,
 });
 
 const expensesModel = mongoose.model(expenseCollection, expenseSchema);
