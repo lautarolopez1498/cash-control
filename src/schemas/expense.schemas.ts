@@ -46,6 +46,9 @@ export type UpdateExpense = z.infer<typeof partialExpenseSchema>;
 export const userIdParamSchema = z.coerce.number();
 export type userIdParam = z.infer<typeof userIdParamSchema>;
 
+export const subcategoryParamSchema = expenseSchema.shape.subcategory;
+export type subcategoryParams = z.infer<typeof subcategoryParamSchema>;
+
 export const categoryParamSchema = expenseSchema.shape.category;
 export type categoryParams = z.infer<typeof categoryParamSchema>;
 

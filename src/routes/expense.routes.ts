@@ -7,6 +7,7 @@ import {
   getExpenseById,
   updateExpense,
   getExpensesByUser,
+  getExpensesBySubcategory,
   getExpensesByCategory,
   getExpensesByDateRange,
 } from '../controllers/expense.controller';
@@ -23,7 +24,8 @@ router.delete('/', deleteAllExpenses);
 
 // Rutas adicionales
 router.get('/user/:userId', getExpensesByUser);
-router.get('/category/:category', getExpensesByCategory);
+router.get('/category/:subcategory', getExpensesBySubcategory);
+router.get('/:category', getExpensesByCategory);
 router.get('/date/by-date', getExpensesByDateRange);
 // router.get('/by-month', getExpensesByDateRange);
 

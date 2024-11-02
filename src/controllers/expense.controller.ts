@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as expenseServices from '../services/expense.service';
 import {
+  subcategoryParamSchema,
   categoryParamSchema,
   dateRangeSchema,
   expenseSchemaOutId,
@@ -165,6 +166,30 @@ export const getExpensesByUser = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Internal Server Error', error });
+  }
+};
+
+export const getExpensesBySubcategory = async (req: Request, res: Response) => {
+  try {
+    const subcategory = subcategoryParamSchema.parse(req.params.subcategory);
+    const expenses =
+      await expenseServices.getExpensesBySubcategory(subcategory);
+
+    if (expenses.length === 0) {
+      return res.status(200).json({
+        message: `No hay ningun gasto para la subcategoria ${subcategory}`,
+        data: expenses,
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Gastos por subcategoria obtenidos correctamente',
+      data: expenses,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({ message: 'Internal Error Server', error });
   }
 };
 

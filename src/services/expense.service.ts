@@ -1,4 +1,5 @@
 import {
+  subcategoryParams,
   categoryParams,
   ExpenseType,
   NewExpenseEntry,
@@ -67,6 +68,14 @@ export const getExpensesByUserId = async (
   userId: userIdParam
 ): Promise<ExpenseType[] | any> => {
   const expenses = await expensesModel.find({ userId });
+
+  return expenses;
+};
+
+export const getExpensesBySubcategory = async (
+  subcategory: subcategoryParams
+): Promise<ExpenseType[] | any> => {
+  const expenses = await expensesModel.find({ subcategory });
 
   return expenses;
 };
